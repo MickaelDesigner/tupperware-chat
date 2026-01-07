@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tupperware ChatBot Tester</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .container {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      width: 90%;
+      max-width: 500px;
+      height: 700px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .header h1 {
+      font-size: 24px;
+      margin-bottom: 5px;
+    }
+
+    .header p {
+      font-size: 12px;
+      opacity: 0.9;
+    }
+
+    .status {
+      padding: 10px;
+      background: #f8f9fa;
+      border-bottom: 1px solid #dee2e6;
+      text-align: center;
+      font-size: 12px;
+      color: #666;
+    }
+
+    .status.connected {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    .status.error {
+      background: #f8d7da;
+      color: #721c24;
+    }
+
+    #chat-box {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      background: #f8f9fa;
+    }
+
+    .message {
+      margin: 15px 0;
+      display: flex;
+      animation: slideIn 0.3s ease-out;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .message.user {
+      justify-content: flex-end;
+    }
+
+    .message-bubble {
+      max-width: 70%;
+      padding: 12px 16px;
+      border-radius: 18px;
+      word-wrap: break-word;
+    }
+
+    .user .message-bubble {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border-bottom-right-radius: 4px;
+    }
+
+    .bot .message-bubble {
+      background: white;
+      color: #333;
+      border: 1px solid #e0e0e0;
+      border-bottom-left-radius: 4px;
+    }
+
+    .message-time {
+      font-size: 10px;
+      opacity: 0.6;
+      margin-top: 4px;
+    }
+
+    .input-area {
+      padding: 15px;
+      background: white;
+      border-top: 1px solid #dee2e6;
+      display: flex;
+      gap: 10px;
+    }
+
+    #message-input {
+      flex: 1;
+      padding: 12px;
+      border: 1px solid #dee2e6;
+      border-radius: 25px;
+      font-size: 14px;
+      outline: none;
+      transition: border 0.3s;
+    }
+
+    #message-input:focus {
+      border-color: #667eea;
+    }
+
+    #send-btn {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 25px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: transform 0.2s;
+    }
+
+    #send-btn:hover {
+      transform: scale(1.05);
+    }
+
+    #send-btn:active {
+      transform: scale(0.95);
+    }
+
+    #send-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .quick-actions {
+      padding: 10px 15px;
+      background: #f8f9fa;
+      border-top: 1px solid #dee2e6;
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+    }
+
+    .quick-btn {
+      padding: 8px 16px;
+      background: white;
+      border: 1px solid #dee2e6;
+      border-radius: 20px;
+      font-size: 12px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.3s;
+    }
+
+    .quick-btn:hover {
+      background: #667eea;
+      color: white;
+      border-color: #667eea;
+    }
+
+    .typing {
+      display: none;
+      padding: 10px;
+      font-size: 12px;
+      color: #666;
+    }
+
+    .typing.show {
+      display: block;
+    }
+
+    .typing span {
+      animation: blink 1.4s infinite;
+    }
+
+    .typing span:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .typing span:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    @keyframes blink {
+      0%, 80%, 100% { opacity: 0; }
+      40% { opacity: 1; }
+    }
+
+    .config-panel {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: white;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      max-width: 300px;
+    }
+
+    .config-panel h3 {
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+
+    .config-panel input {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 8px;
+      border: 1px solid #dee2e6;
+      border-radius: 5px;
+      font-size: 12px;
+    }
+
+    .config-panel button {
+      width: 100%;
+      padding: 8px;
+      background: #667eea;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        width: 100%;
+        height: 100vh;
+        border-radius: 0;
+      }
+
+      .config-panel {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>🤖 Tupperware ChatBot</h1>
+      <p>Asistente Virtual de Tupperware Perú</p>
+    </div>
+
+    <div id="status" class="status">
+      Configurando conexión...
+    </div>
+
+    <div id="chat-box">
+      <div class="message bot">
+        <div class="message-bubble">
+          👋 ¡Hola! Soy Tuppie, tu asistente virtual de Tupperware Perú. ¿En qué puedo ayudarte hoy?
+          <div class="message-time">Ahora</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="typing" id="typing">
+      <span>●</span><span>●</span><span>●</span> Tuppie está escribiendo...
+    </div>
+
+    <div class="quick-actions">
+      <button class="quick-btn" onclick="quickSend('Hola')">👋 Hola</button>
+      <button class="quick-btn" onclick="quickSend('¿Qué productos tienen?')">📦 Productos</button>
+      <button class="quick-btn" onclick="quickSend('Modular Mates')">🔍 Buscar</button>
+      <button class="quick-btn" onclick="quickSend('¿Cuánto cuesta?')">💰 Precios</button>
+      <button class="quick-btn" onclick="quickSend('Quiero hacer un pedido')">🛒 Pedido</button>
+    </div>
+
+<div class="input-area">
+  <input type="file" id="audio-input" accept="audio/*" style="display:none" onchange="handleAudioUpload(this)">
+  
+  <button id="audio-btn" onclick="document.getElementById('audio-input').click()" style="background: #f0f0f0; border: none; border-radius: 50%; padding: 10px; cursor: pointer;">🎙️</button>
+  
+  <input 
+    type="text" 
+    id="message-input" 
+    placeholder="Escribe tu mensaje..."
+    autocomplete="off"
+  >
+  <button id="send-btn" onclick="sendMessage()">Enviar</button>
+</div>
+  </div>
+
+  <div class="config-panel">
+    <h3>⚙️ Configuración</h3>
+    <input 
+      type="text" 
+      id="webhook-url" 
+      placeholder="URL del Webhook"
+      value="https://mickaelvc.app.n8n.cloud/webhook/tupperware-chat"
+    >
+    <input 
+      type="text" 
+      id="user-name" 
+      placeholder="Tu nombre"
+      value="Test User"
+    >
+    <input 
+      type="text" 
+      id="user-phone" 
+      placeholder="Tu teléfono"
+      value="+51999888777"
+    >
+    <button onclick="saveConfig()">💾 Guardar</button>
+  </div>
+
+  <script>
+    let config = {
+      webhookUrl: 'https://mickaelvc.app.n8n.cloud/webhook/tupperware-chat',
+      userName: 'Test User',
+      userPhone: '+51999888777'
+    };
+
+    const chatBox = document.getElementById('chat-box');
+    const messageInput = document.getElementById('message-input');
+    const sendBtn = document.getElementById('send-btn');
+    const statusDiv = document.getElementById('status');
+    const typingDiv = document.getElementById('typing');
+
+    // Cargar configuración del localStorage
+    const savedConfig = localStorage.getItem('chatConfig');
+    if (savedConfig) {
+      config = JSON.parse(savedConfig);
+      document.getElementById('webhook-url').value = config.webhookUrl;
+      document.getElementById('user-name').value = config.userName;
+      document.getElementById('user-phone').value = config.userPhone;
+    }
+
+    function saveConfig() {
+      config.webhookUrl = document.getElementById('webhook-url').value;
+      config.userName = document.getElementById('user-name').value;
+      config.userPhone = document.getElementById('user-phone').value;
+      localStorage.setItem('chatConfig', JSON.stringify(config));
+      updateStatus('Configuración guardada ✅', 'connected');
+      setTimeout(() => updateStatus('Conectado', 'connected'), 2000);
+    }
+
+    function updateStatus(message, type = '') {
+      statusDiv.textContent = message;
+      statusDiv.className = `status ${type}`;
+    }
+
+    //CODIGO AUDIO
+    async function handleAudioUpload(input) {
+  const file = input.files[0];
+  if (!file) return;
+
+  // 1. Mostrar en el chat que se está enviando un audio
+  addMessage(`🎤 Enviando audio: ${file.name}`, 'user');
+  typingDiv.classList.add('show');
+  updateStatus('Subiendo audio...', 'connected');
+
+  // 2. Preparar el FormData (Esto es lo que n8n recibirá como binario)
+  const formData = new FormData();
+  formData.append('data', file); // 'data' es el nombre que debe buscar n8n en el binario
+  formData.append('phone', config.userPhone);
+  formData.append('name', config.userName);
+  formData.append('message', 'Audio enviado desde dashboard'); 
+
+  try {
+    const response = await fetch(config.webhookUrl, {
+      method: 'POST',
+      body: formData // Importante: NO pongas headers de Content-Type, el navegador lo hará solo
+    });
+
+    if (!response.ok) throw new Error('Error al subir el archivo');
+
+    const data = await response.json();
+    
+    setTimeout(() => {
+      typingDiv.classList.remove('show');
+      addMessage(data.response || data.output || '¡Audio procesado! 💙', 'bot');
+      updateStatus('Conectado', 'connected');
+    }, 1000);
+
+  } catch (error) {
+    typingDiv.classList.remove('show');
+    addMessage('❌ Error al procesar el audio. Revisa la consola.', 'bot');
+    updateStatus('Error de envío', 'error');
+    console.error('Error:', error);
+  } finally {
+    // Limpiar el input para poder subir el mismo archivo otra vez si se desea
+    input.value = '';
+  }
+}
+
+  
+    //CODIGO ENVIAR MENSAJE
+    async function sendMessage() {
+      const message = messageInput.value.trim();
+      if (!message) return;
+
+      addMessage(message, 'user');
+      messageInput.value = '';
+      sendBtn.disabled = true;
+      typingDiv.classList.add('show');
+
+      try {
+        const response = await fetch(config.webhookUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            phone: config.userPhone,
+            name: config.userName,
+            message: message
+          })
+        });
+
+        if (!response.ok) throw new Error('Error en la respuesta');
+
+        const data = await response.json();
+        
+        setTimeout(() => {
+          typingDiv.classList.remove('show');
+          addMessage(data.response || 'Error en la respuesta', 'bot');
+          updateStatus('Conectado', 'connected');
+        }, 800);
+
+      } catch (error) {
+        typingDiv.classList.remove('show');
+        addMessage('❌ Error: No se pudo conectar con el servidor. Verifica la URL del webhook.', 'bot');
+        updateStatus('Error de conexión', 'error');
+        console.error('Error:', error);
+      } finally {
+        sendBtn.disabled = false;
+      }
+    }
+
+    function addMessage(text, type) {
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `message ${type}`;
+      
+      const bubbleDiv = document.createElement('div');
+      bubbleDiv.className = 'message-bubble';
+      
+      const textNode = document.createElement('div');
+      textNode.textContent = text;
+      
+      const timeDiv = document.createElement('div');
+      timeDiv.className = 'message-time';
+      timeDiv.textContent = new Date().toLocaleTimeString('es-PE', { 
+        hour: '2-digit', 
+        minute: '2-digit' 
+      });
+      
+      bubbleDiv.appendChild(textNode);
+      bubbleDiv.appendChild(timeDiv);
+      messageDiv.appendChild(bubbleDiv);
+      chatBox.appendChild(messageDiv);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function quickSend(message) {
+      messageInput.value = message;
+      sendMessage();
+    }
+
+    messageInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') sendMessage();
+    });
+
+    // Test inicial de conexión
+    setTimeout(() => {
+      updateStatus('Conectado ✅', 'connected');
+    }, 1000);
+  </script>
+</body>
+</html>
