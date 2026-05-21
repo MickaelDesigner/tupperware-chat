@@ -1,7 +1,7 @@
 <div align="center">
   <img src="https://readme-typing-svg.herokuapp.com?font=Poppins&weight=700&size=40&duration=3000&pause=1000&color=FF004E&center=true&vCenter=true&width=600&lines=Tuppie+AI;Corporate+Assistant;Smart+Automation" alt="Tuppie AI" />
   
-  <p><b>Asistente de Inteligencia Artificial para la gestión de catálogos corporativos y automatización de consultas vía WhatsApp.</b></p>
+  <p><b>Asistente de Inteligencia Artificial para la gestión de ventas, catálogos corporativos y automatización de consultas vía WhatsApp.</b></p>
 
   <a href="https://mickaeldesigner.github.io/tupperware-chat/"><b>🔴 VER LIVE DEMO 🔴</b></a>
 </div>
@@ -9,7 +9,7 @@
 ---
 
 ### 🧠 El Reto y la Solución
-En el ecosistema corporativo y de retail, la atención al cliente repetitiva genera cuellos de botella. **Tuppie** no es solo un chatbot tradicional; es un asistente inteligente diseñado para comprender intenciones, consultar catálogos en tiempo real y guiar al usuario hacia la conversión, todo manteniendo una identidad de marca cohesiva.
+En el ecosistema corporativo y de retail, la atención al cliente repetitiva genera cuellos de botella. **Tuppie** no es solo un chatbot tradicional; es un asistente inteligente diseñado para comprender intenciones, consultar catálogos en tiempo real, guardar contactos, gestionar agendas y guiar al usuario hacia la conversión, todo manteniendo una identidad de marca cohesiva.
 
 ### 🛠️ Arquitectura y Tech Stack
 Una intersección entre lógica de backend robusta y flujos conversacionales fluidos.
@@ -23,10 +23,19 @@ Una intersección entre lógica de backend robusta y flujos conversacionales flu
 
 ### ⚡ Core Features
 - **Procesamiento de Lenguaje Natural:** Interpretación de intenciones de compra y consultas de stock.
-- **Integración fluida con WhatsApp:** Usando Evolution API para respuestas de latencia ultrabaja.
+- **Gestión Integral de Ventas:** Almacenamiento automático de leads, despliegue de servicios y agendamiento inteligente.
+- **Soporte Multimedia:** Capacidad nativa para procesar y responder tanto mensajes de texto como notas de voz.
+- **Integración fluida con WhatsApp:** Usando Evolution API (desplegado en VPS) para respuestas de latencia ultrabaja.
 - **Identidad Propia:** Micro-copys y UX conversacional diseñados para reflejar la voz de la marca.
 
 ---
-<div align="center">
-  <sub>Diseñado y desarrollado por <a href="https://github.com/MickaelDesigner">Mickael</a> | Creative Tech Director</sub>
-</div>
+
+### 🧪 Entornos de Prueba (Testers)
+Para garantizar la estabilidad del flujo antes de pasar a producción, el repositorio incluye dos interfaces de simulación conectadas directamente al webhook del core:
+
+1. **Web UI Tester (`index.html`):** Interfaz gráfica de frontend para demostraciones visuales, validación de UX y simulación de envío de audios mediante interfaz fluida.
+2. **CLI Tester (`tuppie-cli.js`):** Entorno interactivo de terminal para desarrollo. Permite debuggear payloads y simular el envío de archivos binarios directamente desde consola.
+
+**Ejecución del entorno CLI:**
+```bash
+node tuppie-cli.js
