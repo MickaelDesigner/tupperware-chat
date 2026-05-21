@@ -22,11 +22,11 @@ Una intersección entre lógica de backend robusta y flujos conversacionales flu
 </div>
 
 ### ⚡ Core Features
-- **Procesamiento de Lenguaje Natural:** Interpretación de intenciones de compra y consultas de stock.
-- **Gestión Integral de Ventas:** Almacenamiento automático de leads, despliegue de servicios y agendamiento inteligente.
-- **Soporte Multimedia:** Capacidad nativa para procesar y responder tanto mensajes de texto como notas de voz.
-- **Integración fluida con WhatsApp:** Usando Evolution API (desplegado en VPS) para respuestas de latencia ultrabaja.
-- **Identidad Propia:** Micro-copys y UX conversacional diseñados para reflejar la voz de la marca.
+- **Procesamiento de Lenguaje Natural:** Interpretación de intenciones de compra y consultas de stock de productos Tupperware.
+- **Catálogo Inteligente:** Respuestas automatizadas e instantáneas sobre características de productos, precios y disponibilidad.
+- **Soporte Multimedia:** Capacidad nativa para procesar y responder tanto mensajes de texto como notas de voz de las clientas.
+- **Integración fluida con WhatsApp:** Usando Evolution API para respuestas de latencia ultrabaja.
+- **Identidad Propia:** Micro-copys y UX conversacional diseñados para reflejar la voz cálida y cercana de la marca Tupperware.
 
 ---
 
